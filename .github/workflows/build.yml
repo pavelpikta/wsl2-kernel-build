@@ -1,0 +1,38 @@
+---
+name: Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      kernelBranch:
+        description: "WSL2-Linux-Kernel Git branch"
+        required: true
+        default: "linux-msft-wsl-5.15.y"
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: microsoft/WSL2-Linux-Kernel
+          ref: ${{ github.event.inputs.kernelBranch }}
+
+      - name: Install requirements
+        run: sudo apt install build-essential flex bison dwarves libssl-dev libelf-dev
+
+      - name: Build WSL2-Linux-Kernel
+        run: |
+          NB_CORES=$(grep -c '^processor' /proc/cpuinfo)
+          make -j$((NB_CORES+1)) -l${NB_CORES} KCONFIG_CONFIG=Microsoft/config-wsl
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: WSL2-Linux-Kernel
+          path: arch/x86/boot/bzImage
