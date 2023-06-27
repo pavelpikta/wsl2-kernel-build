@@ -1,10 +1,12 @@
-# Basic set up for three package managers
+---
+# Set update schedule for GitHub Actions
 
 version: 2
 updates:
-
-  # Maintain dependencies for GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "daily"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
