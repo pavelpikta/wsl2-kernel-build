@@ -32,7 +32,7 @@ jobs:
           NB_CORES=$(grep -c '^processor' /proc/cpuinfo)
           make -j$((NB_CORES+1)) -l${NB_CORES} KCONFIG_CONFIG=Microsoft/config-wsl
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: WSL2-Linux-Kernel
           path: arch/x86/boot/bzImage
