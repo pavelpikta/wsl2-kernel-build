@@ -161,21 +161,49 @@ jobs:
           if-no-files-found: warn
 
       - name: Generate build summary
-        if: always()
+        if: success()
         run: |
           echo "::group::Build Summary"
           echo "Kernel Branch: ${{ github.event.inputs.kernelBranch }}"
           echo "Custom Config: ${{ github.event.inputs.custom-config }}"
           echo "Modules Built: ${{ github.event.inputs.build-modules }}"
+          {
+            echo "## Build Summary"
+            echo ""
+            echo "| Parameter | Value |"
+            echo "|-----------|-------|"
+            echo "| Kernel Branch | \`${{ github.event.inputs.kernelBranch }}\` |"
+            echo "| Custom Config | \`${{ github.event.inputs.custom-config }}\` |"
+            echo "| Modules Built | \`${{ github.event.inputs.build-modules }}\` |"
+            echo ""
+          } >> $GITHUB_STEP_SUMMARY
           if [ -f "arch/x86/boot/bzImage" ]; then
             KERNEL_SIZE=$(du -h arch/x86/boot/bzImage | cut -f1)
             echo "Kernel Size: $KERNEL_SIZE"
             echo "Kernel SHA256: ${{ steps.digests.outputs.kernel-sha256 }}"
+            {
+              echo "### Kernel"
+              echo ""
+              echo "| Property | Value |"
+              echo "|----------|-------|"
+              echo "| Size | \`$KERNEL_SIZE\` |"
+              echo "| SHA256 | \`${{ steps.digests.outputs.kernel-sha256 }}\` |"
+              echo ""
+            } >> $GITHUB_STEP_SUMMARY
           fi
           if [ -f "arch/x86/boot/modules.vhdx" ]; then
             MODULES_SIZE=$(du -h arch/x86/boot/modules.vhdx | cut -f1)
             echo "Modules Size: $MODULES_SIZE"
             echo "Modules SHA256: ${{ steps.digests.outputs.modules-sha256 }}"
+            {
+              echo "### Modules"
+              echo ""
+              echo "| Property | Value |"
+              echo "|----------|-------|"
+              echo "| Size | \`$MODULES_SIZE\` |"
+              echo "| SHA256 | \`${{ steps.digests.outputs.modules-sha256 }}\` |"
+              echo ""
+            } >> $GITHUB_STEP_SUMMARY
           fi
           echo "::endgroup::"
 
