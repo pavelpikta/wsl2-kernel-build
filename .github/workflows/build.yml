@@ -57,7 +57,7 @@ jobs:
           fetch-depth: 1
 
       - name: Checkout custom-config repository
-        if: ${{ github.event.inputs.custom-config }}
+        if: github.event.inputs.custom-config == 'true'
         uses: actions/checkout@v6
         with:
           repository: ${{ github.repository }}
@@ -79,7 +79,7 @@ jobs:
 
       - name: Patch WSL2 kernel config
         id: patch-config
-        if: ${{ github.event.inputs.custom-config }}
+        if: github.event.inputs.custom-config == 'true'
         run: |
           echo "::group::Patch kernel config"
           if [ ! -f "custom-config-repo/scripts/patch-wsl2-kernel-config.sh" ]; then
@@ -104,7 +104,7 @@ jobs:
 
       - name: Build WSL2-Linux-Kernel modules
         id: build-modules
-        if: ${{ github.event.inputs.build-modules }}
+        if: github.event.inputs.build-modules == 'true'
         run: |
           echo "::group::Build modules"
           if [[ "${{ github.event.inputs.kernelBranch }}" == "linux-msft-wsl-6.6.y" ]]; then
@@ -118,9 +118,11 @@ jobs:
               echo "Error: Modules VHDX generation failed"
               exit 1
             fi
+            echo "modules-built=true" >> $GITHUB_OUTPUT
           else
-            echo "Module VHDX generation not supported for branch ${{ github.event.inputs.kernelBranch }}"
-            touch arch/x86/boot/modules.vhdx
+            echo "Error: Module VHDX generation is only supported for branch linux-msft-wsl-6.6.y"
+            echo "Current branch: ${{ github.event.inputs.kernelBranch }}"
+            exit 1
           fi
           echo "::endgroup::"
 
@@ -131,7 +133,7 @@ jobs:
           KERNEL_SHA256=$(sha256sum arch/x86/boot/bzImage | cut -d' ' -f1)
           echo "kernel-sha256=$KERNEL_SHA256" >> $GITHUB_OUTPUT
           echo "Kernel SHA256: $KERNEL_SHA256"
-          if [ "${{ github.event.inputs.build-modules }}" == "true" ] && [ -f "arch/x86/boot/modules.vhdx" ]; then
+          if [ "${{ github.event.inputs.build-modules }}" == "true" ] && [ "${{ steps.build-modules.outputs.modules-built }}" == "true" ] && [ -f "arch/x86/boot/modules.vhdx" ]; then
             MODULES_SHA256=$(sha256sum arch/x86/boot/modules.vhdx | cut -d' ' -f1)
             echo "modules-sha256=$MODULES_SHA256" >> $GITHUB_OUTPUT
             echo "Modules SHA256: $MODULES_SHA256"
@@ -148,7 +150,7 @@ jobs:
           compression-level: 6
 
       - name: Upload modules artifact
-        if: ${{ github.event.inputs.build-modules }}
+        if: github.event.inputs.build-modules == 'true'
         uses: actions/upload-artifact@v5
         id: upload-modules
         with:
@@ -186,7 +188,7 @@ jobs:
 
       - uses: actions/attest-build-provenance@v3
         id: attest-modules
-        if: success() && github.event.inputs.build-modules
+        if: success() && github.event.inputs.build-modules == 'true' && steps.build-modules.outputs.modules-built == 'true'
         with:
           subject-name: WSL2-Modules-${{ github.event.inputs.kernelBranch }}
           subject-digest: sha256:${{ steps.digests.outputs.modules-sha256 }}
