@@ -7,7 +7,7 @@ on:
       kernelBranch:
         description: "WSL2-Linux-Kernel branch"
         required: true
-        default: "linux-msft-wsl-6.6.y"
+        default: "linux-msft-wsl-6.18.y"
         type: string
       build-modules:
         description: "Build modules?"
@@ -107,7 +107,7 @@ jobs:
         if: github.event.inputs.build-modules == 'true'
         run: |
           echo "::group::Build modules"
-          if [[ "${{ github.event.inputs.kernelBranch }}" == "linux-msft-wsl-6.6.y" ]]; then
+          if [[ "${{ github.event.inputs.kernelBranch }}" == "linux-msft-wsl-6.18.y" ]]; then
             make -j$(nproc) INSTALL_MOD_PATH="$PWD/modules" modules_install
             if [ ! -f "Microsoft/scripts/gen_modules_vhdx.sh" ]; then
               echo "Error: gen_modules_vhdx.sh script not found"
@@ -120,7 +120,7 @@ jobs:
             fi
             echo "modules-built=true" >> $GITHUB_OUTPUT
           else
-            echo "Error: Module VHDX generation is only supported for branch linux-msft-wsl-6.6.y"
+            echo "Error: Module VHDX generation is only supported for branch linux-msft-wsl-6.18.y"
             echo "Current branch: ${{ github.event.inputs.kernelBranch }}"
             exit 1
           fi

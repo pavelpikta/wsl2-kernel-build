@@ -3,7 +3,7 @@
 [![Build Status](https://github.com/pavelpikta/wsl2-kernel-build/actions/workflows/build.yml/badge.svg)](https://github.com/pavelpikta/wsl2-kernel-build/actions/workflows/build.yml)
 [![WSL2](https://img.shields.io/badge/WSL2-Kernel%20Build-0078D4?logo=windows&logoColor=white)](https://github.com/microsoft/WSL2-Linux-Kernel)
 [![Docker](https://img.shields.io/badge/Docker-Compatible-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
-[![Linux Kernel](https://img.shields.io/badge/Linux%20Kernel-6.6+-FCC624?logo=linux&logoColor=black)](https://www.kernel.org/)
+[![Linux Kernel](https://img.shields.io/badge/Linux%20Kernel-6.18+-FCC624?logo=linux&logoColor=black)](https://www.kernel.org/)
 [![Shell Script](https://img.shields.io/badge/Shell-Bash-4EAA25?logo=gnu-bash&logoColor=white)](https://www.gnu.org/software/bash/)
 
 A repository for building WSL2 Linux kernels with Docker compatibility and BBR (Bottleneck Bandwidth and RTT) support. This project provides automated tools and configurations to patch Microsoft's WSL2 kernel source with the necessary kernel options required for running Docker and improving network performance.
@@ -85,7 +85,7 @@ The script will:
 2. Select the **Build** workflow
 3. Click **Run workflow**
 4. Configure the build parameters:
-   - **kernelBranch**: WSL2-Linux-Kernel branch (default: `linux-msft-wsl-6.6.y`)
+   - **kernelBranch**: WSL2-Linux-Kernel branch (default: `linux-msft-wsl-6.18.y`)
    - **build-modules**: Whether to build kernel modules (default: `false`)
    - **custom-config**: Use custom config from this repository (default: `false`)
 5. Click **Run workflow**

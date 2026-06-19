@@ -6,7 +6,7 @@
 set -e
 
 # Default URL for WSL2 kernel config
-CONFIG_URL="https://raw.githubusercontent.com/microsoft/WSL2-Linux-Kernel/refs/heads/linux-msft-wsl-6.6.y/arch/x86/configs/config-wsl"
+CONFIG_URL="https://raw.githubusercontent.com/microsoft/WSL2-Linux-Kernel/refs/heads/linux-msft-wsl-6.18.y/arch/x86/configs/config-wsl"
 
 # Default output filename
 DEFAULT_OUTPUT="config-wsl2.cfg"
