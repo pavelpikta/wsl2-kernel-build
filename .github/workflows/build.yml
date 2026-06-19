@@ -50,7 +50,7 @@ jobs:
           echo "Use custom config: ${{ github.event.inputs.custom-config }}"
 
       - name: Checkout WSL2-Linux-Kernel repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: microsoft/WSL2-Linux-Kernel
           ref: ${{ github.event.inputs.kernelBranch }}
@@ -58,7 +58,7 @@ jobs:
 
       - name: Checkout custom-config repository
         if: github.event.inputs.custom-config == 'true'
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: ${{ github.repository }}
           ref: ${{ github.ref }}
